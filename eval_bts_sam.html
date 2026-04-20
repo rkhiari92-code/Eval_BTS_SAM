@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Évaluation BTS SAM — Ateliers de Professionnalisation</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+  :root {
+    --bleu: #1a2e5a;
+    --bleu-mid: #2d4a8a;
+    --bleu-light: #4a6fba;
+    --gold: #c9973a;
+    --gold-light: #e8b85a;
+    --cream: #faf8f4;
+    --text: #1a1a2e;
+    --text-light: #5a6070;
+    --border: #dde2ee;
+    --success: #2d7a4f;
+    --error: #c0392b;
+    --warning: #e67e22;
+    --card-bg: #ffffff;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .app-header {
+    background: var(--bleu);
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 20px rgba(26,46,90,.3);
+  }
+  .header-logo {
+    width: 52px; height: 52px;
+    background: var(--gold);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px; color: white; font-weight: bold;
+  }
+  .header-text h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem; color: #fff; font-weight: 400;
+  }
+  .header-text p { font-size: .8rem; color: rgba(255,255,255,.6); margin-top: 2px; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    background: var(--bleu);
+    padding: 0 40px 20px;
+  }
+  .progress-info { display: flex; justify-content: space-between; color: rgba(255,255,255,.7); font-size: .8rem; margin-bottom: 8px; }
+  .progress-bar { background: rgba(255,255,255,.15); border-radius: 99px; height: 6px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--gold); border-radius: 99px; transition: width .4s ease; }
+
+  /* ── SCREEN WRAPPER ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── IDENTITE SCREEN ── */
+  .id-screen {
+    max-width: 540px; margin: 60px auto; padding: 0 20px;
+  }
+  .id-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 48px;
+    box-shadow: 0 8px 40px rgba(26,46,90,.1);
+    border: 1px solid var(--border);
+  }
+  .id-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem; color: var(--bleu); margin-bottom: 6px;
+  }
+  .id-card .subtitle { color: var(--text-light); font-size: .9rem; margin-bottom: 32px; }
+  .info-badge {
+    background: #eef3ff;
+    border: 1px solid #c5d4f5;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: .82rem;
+    color: var(--bleu-mid);
+    margin-bottom: 28px;
+    line-height: 1.6;
+  }
+  .form-group { margin-bottom: 20px; }
+  .form-group label {
+    display: block; font-size: .82rem; font-weight: 600;
+    color: var(--bleu); margin-bottom: 6px; letter-spacing: .02em;
+  }
+  .form-group input {
+    width: 100%; padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px; font-family: 'DM Sans', sans-serif;
+    font-size: .95rem; color: var(--text);
+    transition: border-color .2s;
+    outline: none;
+    background: #fafbff;
+  }
+  .form-group input:focus { border-color: var(--bleu-light); background: #fff; }
+
+  .btn-primary {
+    width: 100%; padding: 14px;
+    background: var(--bleu);
+    color: white; border: none; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; font-weight: 600;
+    cursor: pointer; margin-top: 8px;
+    transition: background .2s, transform .1s;
+    letter-spacing: .02em;
+  }
+  .btn-primary:hover { background: var(--bleu-mid); }
+  .btn-primary:active { transform: scale(.99); }
+  .btn-primary:disabled { background: #aaa; cursor: not-allowed; }
+
+  /* ── QUIZ SCREEN ── */
+  .quiz-wrap {
+    max-width: 780px; margin: 0 auto; padding: 40px 20px 80px;
+  }
+
+  .section-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 28px; padding-bottom: 16px;
+    border-bottom: 2px solid var(--border);
+  }
+  .section-badge {
+    background: var(--bleu); color: white;
+    font-size: .72rem; font-weight: 600;
+    padding: 5px 12px; border-radius: 99px;
+    letter-spacing: .06em; text-transform: uppercase;
+  }
+  .section-badge.nova { background: var(--gold); }
+  .section-badge.open { background: var(--success); }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem; color: var(--bleu);
+  }
+
+  /* Question card */
+  .q-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 16px;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .q-card:hover { border-color: var(--bleu-light); box-shadow: 0 4px 16px rgba(26,46,90,.07); }
+
+  .q-num {
+    font-size: .72rem; font-weight: 600; color: var(--text-light);
+    letter-spacing: .08em; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .q-text {
+    font-size: 1rem; font-weight: 500; color: var(--text);
+    line-height: 1.55; margin-bottom: 18px;
+  }
+  .q-points {
+    display: inline-block;
+    background: #f0f4ff; color: var(--bleu-mid);
+    font-size: .72rem; font-weight: 600;
+    padding: 3px 10px; border-radius: 99px;
+    margin-left: 8px; vertical-align: middle;
+  }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all .15s;
+    font-size: .92rem;
+  }
+  .option:hover { border-color: var(--bleu-light); background: #f5f8ff; }
+  .option input[type="radio"] { accent-color: var(--bleu); width: 16px; height: 16px; flex-shrink: 0; }
+  .option.selected { border-color: var(--bleu); background: #eef3ff; }
+
+  /* Open question */
+  .open-textarea {
+    width: 100%; padding: 14px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .92rem; color: var(--text);
+    resize: vertical; min-height: 100px;
+    outline: none; transition: border-color .2s;
+    background: #fafbff;
+  }
+  .open-textarea:focus { border-color: var(--bleu-light); background: #fff; }
+  .char-count { text-align: right; font-size: .75rem; color: var(--text-light); margin-top: 4px; }
+
+  /* Submit zone */
+  .submit-zone {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-top: 32px;
+    text-align: center;
+  }
+  .submit-zone h3 { font-family: 'DM Serif Display', serif; font-size: 1.4rem; color: var(--bleu); margin-bottom: 8px; }
+  .submit-zone p { color: var(--text-light); font-size: .88rem; margin-bottom: 24px; }
+  .btn-submit {
+    padding: 16px 48px;
+    background: var(--gold);
+    color: white; border: none; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; font-weight: 600;
+    cursor: pointer; transition: background .2s;
+    letter-spacing: .02em;
+  }
+  .btn-submit:hover { background: var(--gold-light); }
+  .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
+
+  /* ── LOADING SCREEN ── */
+  .loading-screen {
+    max-width: 480px; margin: 100px auto;
+    text-align: center; padding: 20px;
+  }
+  .loader {
+    width: 56px; height: 56px;
+    border: 4px solid var(--border);
+    border-top-color: var(--bleu);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 24px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-screen h2 { font-family: 'DM Serif Display', serif; color: var(--bleu); margin-bottom: 8px; }
+  .loading-screen p { color: var(--text-light); font-size: .9rem; }
+  .loading-steps { margin-top: 28px; text-align: left; max-width: 320px; margin-left: auto; margin-right: auto; }
+  .step-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: .85rem; color: var(--text-light);
+  }
+  .step-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .75rem; flex-shrink: 0; }
+  .step-icon.done { background: var(--success); color: white; }
+  .step-icon.active { background: var(--bleu); color: white; animation: pulse 1s infinite; }
+  .step-icon.wait { background: var(--border); color: var(--text-light); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+  /* ── RESULTS SCREEN ── */
+  .results-wrap {
+    max-width: 780px; margin: 0 auto; padding: 40px 20px 80px;
+  }
+  .result-hero {
+    background: var(--bleu);
+    border-radius: 16px;
+    padding: 48px;
+    text-align: center;
+    margin-bottom: 32px;
+    position: relative; overflow: hidden;
+  }
+  .result-hero::before {
+    content: '';
+    position: absolute; top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: var(--gold); opacity: .1;
+    border-radius: 50%;
+  }
+  .result-hero .student-name { color: rgba(255,255,255,.7); font-size: .9rem; margin-bottom: 12px; }
+  .score-circle {
+    width: 130px; height: 130px;
+    border: 5px solid var(--gold);
+    border-radius: 50%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    background: rgba(255,255,255,.05);
+  }
+  .score-num { font-family: 'DM Serif Display', serif; font-size: 2.8rem; color: white; line-height: 1; }
+  .score-denom { font-size: .8rem; color: rgba(255,255,255,.6); }
+  .score-mention {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem; color: var(--gold); margin-bottom: 8px;
+  }
+  .score-pct { color: rgba(255,255,255,.7); font-size: .9rem; }
+
+  .result-breakdown {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin-bottom: 28px;
+  }
+  .breakdown-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .breakdown-card h4 { font-size: .78rem; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; }
+  .breakdown-score { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: var(--bleu); }
+  .breakdown-max { font-size: .85rem; color: var(--text-light); }
+
+  /* Detailed corrections */
+  .corrections-section { margin-bottom: 28px; }
+  .corrections-section h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem; color: var(--bleu);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .correction-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    border-left: 4px solid var(--border);
+  }
+  .correction-item.correct { border-left-color: var(--success); }
+  .correction-item.incorrect { border-left-color: var(--error); }
+  .correction-item.partial { border-left-color: var(--warning); }
+  .corr-q { font-size: .85rem; font-weight: 600; color: var(--text); margin-bottom: 8px; line-height: 1.4; }
+  .corr-your { font-size: .82rem; color: var(--text-light); margin-bottom: 6px; }
+  .corr-answer { font-size: .82rem; margin-bottom: 6px; font-weight: 500; }
+  .corr-answer.ok { color: var(--success); }
+  .corr-answer.ko { color: var(--error); }
+  .corr-expl { font-size: .82rem; color: var(--text-light); font-style: italic; line-height: 1.5; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+  .corr-ai { background: #f5f8ff; border-radius: 8px; padding: 12px; font-size: .82rem; color: var(--bleu-mid); line-height: 1.6; margin-top: 8px; }
+  .corr-ai strong { display: block; margin-bottom: 4px; font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; }
+  .badge-pts {
+    float: right;
+    font-size: .72rem; font-weight: 600;
+    padding: 3px 10px; border-radius: 99px;
+    margin-left: 8px;
+  }
+  .badge-pts.full { background: #d4f0e0; color: var(--success); }
+  .badge-pts.zero { background: #fde8e8; color: var(--error); }
+  .badge-pts.half { background: #fff0d4; color: var(--warning); }
+
+  .mail-notice {
+    background: #eef6f0;
+    border: 1px solid #b2d9c0;
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: .85rem; color: var(--success);
+    text-align: center; margin-bottom: 24px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+
+  .config-warning {
+    background: #fff8ee;
+    border: 1px solid #f0c070;
+    border-radius: 10px;
+    padding: 20px 24px;
+    font-size: .85rem;
+    margin-bottom: 24px;
+    line-height: 1.7;
+  }
+  .config-warning strong { color: var(--warning); }
+  .config-warning code {
+    background: #f0e8d0; padding: 2px 6px;
+    border-radius: 4px; font-family: monospace; font-size: .8rem;
+  }
+
+  /* ── BOUTONS FLOTTANTS ÉNONCÉS ── */
+  .fab-container {
+    position: fixed;
+    bottom: 28px; right: 24px;
+    display: flex; flex-direction: column; gap: 12px;
+    z-index: 900;
+  }
+  .fab {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 18px;
+    border: none; border-radius: 99px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .82rem; font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(0,0,0,.22);
+    transition: transform .15s, box-shadow .15s;
+    white-space: nowrap;
+  }
+  .fab:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.28); }
+  .fab-nordex { background: var(--bleu); color: #fff; }
+  .fab-nova   { background: var(--gold);  color: #fff; }
+  .fab-icon { font-size: 1rem; }
+
+  /* ── MODALE ÉNONCÉ ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(10,20,50,.55);
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+  }
+  .modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; padding: 32px 16px; }
+  .modal-box {
+    background: #fff;
+    border-radius: 16px;
+    width: 100%; max-width: 860px;
+    max-height: 88vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 80px rgba(0,0,0,.3);
+    animation: modalIn .2s ease;
+  }
+  @keyframes modalIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+  .modal-header {
+    position: sticky; top: 0;
+    background: var(--bleu);
+    padding: 18px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-radius: 16px 16px 0 0;
+    z-index: 10;
+  }
+  .modal-header.nova-h { background: var(--gold); }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: #fff; }
+  .modal-close {
+    background: rgba(255,255,255,.2); border: none;
+    color: #fff; font-size: 1.2rem;
+    width: 34px; height: 34px; border-radius: 50%;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background .15s;
+  }
+  .modal-close:hover { background: rgba(255,255,255,.35); }
+
+  .modal-body { padding: 32px; }
+  .modal-body h2 {
+    font-family: 'DM Serif Display', serif;
+    color: var(--bleu); font-size: 1.2rem;
+    margin: 28px 0 10px; padding-bottom: 6px;
+    border-bottom: 2px solid var(--border);
+  }
+  .modal-body h2:first-child { margin-top: 0; }
+  .modal-body h3 {
+    color: var(--bleu-mid); font-size: 1rem;
+    margin: 18px 0 8px;
+  }
+  .modal-body p { font-size: .9rem; line-height: 1.7; color: var(--text); margin-bottom: 10px; }
+  .modal-body ul { margin: 8px 0 12px 20px; }
+  .modal-body ul li { font-size: .88rem; line-height: 1.65; color: var(--text); margin-bottom: 4px; }
+  .modal-body strong { color: var(--bleu); }
+
+  /* Tableau dans modale */
+  .enonce-table {
+    width: 100%; border-collapse: collapse;
+    margin: 14px 0 20px; font-size: .83rem;
+  }
+  .enonce-table th {
+    background: var(--bleu); color: #fff;
+    padding: 9px 12px; text-align: left;
+    font-weight: 600; font-size: .78rem;
+    letter-spacing: .03em;
+  }
+  .enonce-table.nova-t th { background: var(--gold); }
+  .enonce-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top; line-height: 1.5;
+  }
+  .enonce-table tr:nth-child(even) td { background: #f7f9ff; }
+  .enonce-table tr:last-child td { border-bottom: none; }
+
+  .badge-tache {
+    display: inline-block;
+    background: var(--bleu); color: #fff;
+    font-size: .72rem; font-weight: 700;
+    padding: 3px 10px; border-radius: 99px;
+    margin-bottom: 10px; letter-spacing: .05em;
+  }
+  .badge-tache.nova-t { background: var(--gold); }
+  .info-box {
+    background: #eef3ff; border-left: 4px solid var(--bleu-light);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px; margin: 12px 0;
+    font-size: .85rem; line-height: 1.6; color: var(--bleu-mid);
+  }
+  .info-box.nova-i { background: #fff8ee; border-left-color: var(--gold); color: #7a5010; }
+
+  @media (max-width: 600px) {
+    .app-header { padding: 16px 20px; }
+    .progress-wrap { padding: 0 20px 16px; }
+    .quiz-wrap, .results-wrap { padding: 24px 16px 60px; }
+    .q-card { padding: 20px; }
+    .result-breakdown { grid-template-columns: 1fr; }
+    .result-hero { padding: 32px 24px; }
+    .id-card { padding: 32px 24px; }
+    .fab-container { bottom: 16px; right: 12px; }
+    .fab { padding: 10px 14px; font-size: .78rem; }
+    .modal-overlay { padding: 0; align-items: flex-end; }
+    .modal-box { border-radius: 16px 16px 0 0; max-height: 92vh; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════ -->
+<header class="app-header">
+  <div class="header-logo">S</div>
+  <div class="header-text">
+    <h1>Évaluation BTS SAM — 1ère année</h1>
+    <p>Ateliers de Professionnalisation · NORDEX & NOVA · Noté sur 20</p>
+  </div>
+</header>
+
+<!-- Progress (masqué au départ) -->
+<div class="progress-wrap" id="progressWrap" style="display:none">
+  <div class="progress-info">
+    <span id="progressLabel">Question 1 / 35</span>
+    <span id="progressPct">0%</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 1 — IDENTITÉ
+══════════════════════════════════════════ -->
+<div class="screen active" id="screenId">
+  <div class="id-screen">
+    <div class="id-card">
+      <h2>Bienvenue 👋</h2>
+      <p class="subtitle">Évaluation sur les Ateliers NORDEX SAS et NOVA Solutions</p>
+      <div class="info-badge">
+        📋 <strong>35 questions</strong> · QCM + questions ouvertes · Durée estimée : <strong>45–60 min</strong><br>
+        📩 Votre note et le corrigé détaillé vous seront envoyés par mail à la fin.
+      </div>
+      <div class="form-group">
+        <label>NOM *</label>
+        <input type="text" id="inputNom" placeholder="ex : DUPONT" autocomplete="family-name">
+      </div>
+      <div class="form-group">
+        <label>PRÉNOM *</label>
+        <input type="text" id="inputPrenom" placeholder="ex : Marie" autocomplete="given-name">
+      </div>
+      <div class="form-group">
+        <label>ADRESSE MAIL *</label>
+        <input type="email" id="inputMail" placeholder="prenom.nom@lycee.fr" autocomplete="email">
+      </div>
+      <button class="btn-primary" onclick="startQuiz()">Commencer l'évaluation →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 2 — QUIZ
+══════════════════════════════════════════ -->
+<div class="screen" id="screenQuiz">
+  <div class="quiz-wrap" id="quizContent"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 3 — LOADING
+══════════════════════════════════════════ -->
+<div class="screen" id="screenLoading">
+  <div class="loading-screen">
+    <div class="loader"></div>
+    <h2>Correction en cours…</h2>
+    <p>Vos réponses aux questions ouvertes sont analysées par l'IA.</p>
+    <div class="loading-steps">
+      <div class="step-item" id="step1">
+        <div class="step-icon active" id="step1Icon">⟳</div>
+        <span>Correction des QCM</span>
+      </div>
+      <div class="step-item" id="step2">
+        <div class="step-icon wait" id="step2Icon">2</div>
+        <span>Analyse des réponses ouvertes (IA)</span>
+      </div>
+      <div class="step-item" id="step3">
+        <div class="step-icon wait" id="step3Icon">3</div>
+        <span>Calcul de la note finale</span>
+      </div>
+      <div class="step-item" id="step4">
+        <div class="step-icon wait" id="step4Icon">4</div>
+        <span>Envoi du corrigé par mail</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 4 — RÉSULTATS
+══════════════════════════════════════════ -->
+<div class="screen" id="screenResults">
+  <div class="results-wrap" id="resultsContent"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     BOUTONS FLOTTANTS (visibles pendant le quiz)
+══════════════════════════════════════════ -->
+<div class="fab-container" id="fabContainer" style="display:none">
+  <button class="fab fab-nova" onclick="openModal('nova')">
+    <span class="fab-icon">📄</span> Énoncé NOVA Solutions
+  </button>
+  <button class="fab fab-nordex" onclick="openModal('nordex')">
+    <span class="fab-icon">📄</span> Énoncé NORDEX SAS
+  </button>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODALE — ÉNONCÉ NORDEX
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalNordex" onclick="closeModalOutside(event, 'nordex')">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">📋 Atelier NORDEX SAS — Énoncé complet</span>
+      <button class="modal-close" onclick="closeModal('nordex')">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <h2>Mise en situation</h2>
+      <p>Vous êtes <strong>assistant(e) de gestion</strong> au sein de <strong>NORDEX SAS</strong>, PME spécialisée dans la <strong>distribution de fournitures de bureau</strong>. M. Lefebvre, responsable commercial, vous confie la mission de réaliser le <strong>bilan commercial du 1er trimestre</strong> (janvier, février, mars).</p>
+      <div class="info-box">
+        <strong>Travail en binôme — Rendu attendu :</strong> un fichier Excel finalisé, un fichier Word (compte rendu), un fichier PowerPoint.<br>
+        Nommage : <strong>NOM1_NOM2_Excel / NOM1_NOM2_Word / NOM1_NOM2_PPT</strong>
+      </div>
+
+      <h2>TÂCHE 1 — Tableau de suivi des ventes (Excel)</h2>
+      <span class="badge-tache">Excel</span>
+      <p>À partir du fichier <em>Excel_NORDEX_brut.xlsx</em> :</p>
+      <ul>
+        <li>Mettre en forme le tableau : titres en gras, couleurs de la charte, bordures</li>
+        <li>Saisir les formules : total par commercial, total par mois, total général</li>
+        <li>Calculer le <strong>taux d'atteinte des objectifs</strong> (objectif mensuel : <strong>15 000 €</strong>)</li>
+        <li>Calculer la <strong>part de chaque région</strong> dans le CA total</li>
+        <li>Créer un onglet <strong>« Graphiques »</strong> avec :
+          <ul>
+            <li>Un histogramme des ventes par commercial</li>
+            <li>Un graphique en secteurs (camembert) de la répartition régionale</li>
+            <li>Un graphique en courbes de l'évolution mensuelle</li>
+          </ul>
+        </li>
+        <li>Mise en page impression : en-têtes, marges, <strong>orientation paysage</strong> pour le tableau principal</li>
+      </ul>
+
+      <h2>TÂCHE 2 — Compte rendu de gestion commerciale (Word)</h2>
+      <span class="badge-tache">Word</span>
+      <p>Rédiger un compte rendu professionnel destiné à <strong>M. Lefebvre, responsable commercial</strong> :</p>
+      <ul>
+        <li>Styles Titres (Titre 1, Titre 2, Normal)</li>
+        <li>En-tête avec logo NORDEX + pied de page avec numérotation</li>
+        <li>Structure en 4 parties :
+          <ol style="margin:6px 0 0 16px">
+            <li>Objet et contexte du bilan</li>
+            <li>Résultats par commercial (tableau récapitulatif)</li>
+            <li>Analyse des performances : points forts et axes d'amélioration</li>
+            <li>Recommandations pour le T2</li>
+          </ol>
+        </li>
+        <li>Insérer une capture du graphique Excel dans le document</li>
+        <li>Longueur attendue : <strong>1 à 2 pages</strong></li>
+      </ul>
+
+      <h2>TÂCHE 3 — Support de présentation (PowerPoint)</h2>
+      <span class="badge-tache">PowerPoint</span>
+      <p>Créer un support de <strong>6 à 8 diapositives</strong> pour le comité de direction :</p>
+      <table class="enonce-table">
+        <thead><tr><th>Diapo</th><th>Titre suggéré</th><th>Contenu attendu</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1</strong></td><td>Diapositive de titre</td><td>Nom de l'entreprise, titre, date, noms</td></tr>
+          <tr><td><strong>2</strong></td><td>Sommaire</td><td>Plan de la présentation (4 points clés)</td></tr>
+          <tr><td><strong>3</strong></td><td>Chiffres clés du T1</td><td>CA total, objectif atteint (%), 3 KPI visuels</td></tr>
+          <tr><td><strong>4</strong></td><td>Performances par commercial</td><td>Tableau ou graphique en barres</td></tr>
+          <tr><td><strong>5</strong></td><td>Répartition régionale</td><td>Graphique camembert importé depuis Excel</td></tr>
+          <tr><td><strong>6</strong></td><td>Analyse : forces &amp; alertes</td><td>Points positifs, points à surveiller</td></tr>
+          <tr><td><strong>7</strong></td><td>Recommandations T2</td><td>3 actions concrètes à mettre en place</td></tr>
+          <tr><td><strong>8</strong></td><td>Conclusion / Questions</td><td>Message de clôture, visuel de qualité</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li>Thème graphique cohérent avec la charte NORDEX</li>
+        <li>Police <strong>minimum 18pt</strong>, pas de pavés de texte</li>
+        <li>Le PowerPoint doit être une synthèse, pas une copie du Word</li>
+      </ul>
+
+      <h2>TÂCHE 4 — Présentation orale (5 minutes par binôme)</h2>
+      <span class="badge-tache">Oral</span>
+      <ul>
+        <li>Les deux membres du binôme doivent prendre la parole</li>
+        <li>Adapter le discours à un public de direction (ton professionnel, clarté, concision)</li>
+        <li>Être prêt(e) à répondre à 1 ou 2 questions</li>
+      </ul>
+
+      <h2>Critères de réussite</h2>
+      <div class="info-box">
+        <strong>Excel :</strong> formules fonctionnelles, graphiques lisibles, mise en forme soignée.<br>
+        <strong>Word :</strong> structure respectée, langue professionnelle, mise en page correcte.<br>
+        <strong>PowerPoint :</strong> synthèse visuelle efficace, cohérence graphique.<br>
+        <strong>Oral :</strong> clarté, posture professionnelle, respect du temps.
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODALE — ÉNONCÉ NOVA
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalNova" onclick="closeModalOutside(event, 'nova')">
+  <div class="modal-box">
+    <div class="modal-header nova-h">
+      <span class="modal-title">📋 Atelier NOVA Solutions — Énoncé complet</span>
+      <button class="modal-close" onclick="closeModal('nova')">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <h2>Contexte professionnel</h2>
+      <div class="info-box nova-i">
+        <strong>Entreprise :</strong> NOVA Solutions SAS · <strong>Secteur :</strong> Conseil &amp; services aux entreprises<br>
+        <strong>Poste occupé :</strong> Assistant(e) de direction<br>
+        <strong>Durée totale :</strong> 4 heures · <strong>Niveau :</strong> Intermédiaire (progressif)
+      </div>
+      <p>Vous êtes <strong>assistant(e) de direction</strong> au sein de NOVA Solutions SAS. La direction vous confie plusieurs missions bureautiques urgentes à réaliser avant la réunion du comité de direction prévue en fin de journée.</p>
+
+      <h2>TÂCHE 1 — Gestion des frais de déplacement (Excel)</h2>
+      <span class="badge-tache nova-t">Excel</span>
+      <p>La responsable administrative, <strong>Mme Bénard</strong>, vous remet un fichier de suivi des frais de déplacement des commerciaux pour le mois de mars.</p>
+      <h3>Données fournies (feuille « Données brutes »)</h3>
+      <table class="enonce-table nova-t">
+        <thead><tr><th>Colonne</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Nom du commercial</td><td>Identifiant du salarié</td></tr>
+          <tr><td>Date du déplacement</td><td>Format JJ/MM/AAAA</td></tr>
+          <tr><td>Destination</td><td>Ville ou lieu</td></tr>
+          <tr><td>Kilométrage (km)</td><td>Distance parcourue</td></tr>
+          <tr><td>Repas (€)</td><td>Frais de restauration</td></tr>
+          <tr><td>Hébergement (€)</td><td>Frais d'hôtel</td></tr>
+        </tbody>
+      </table>
+      <h3>Travail demandé — Feuille « Tableau de bord » (à créer)</h3>
+      <ul>
+        <li>Calculer le <strong>total des frais par commercial</strong> (SOMME)</li>
+        <li>Calculer l'<strong>indemnité kilométrique</strong> au barème de <strong>0,35 €/km</strong></li>
+        <li>Calculer le <strong>montant moyen des repas</strong> (MOYENNE)</li>
+        <li>Identifier le commercial ayant engagé le <strong>plus de frais</strong> (MAX + mise en évidence)</li>
+      </ul>
+      <h3>Mise en forme</h3>
+      <ul>
+        <li>Mise en forme conditionnelle : <strong>fond rouge si total &gt; 500 €</strong></li>
+        <li>Figer la première ligne (titres de colonnes)</li>
+        <li>Format monétaire (€) sur les colonnes de montants</li>
+        <li>Insérer un <strong>graphique en barres groupées</strong> des frais totaux par commercial</li>
+      </ul>
+
+      <h2>TÂCHE 2 — Compte rendu de réunion (Word)</h2>
+      <span class="badge-tache nova-t">Word</span>
+      <h3>Informations de la réunion</h3>
+      <table class="enonce-table nova-t">
+        <thead><tr><th>Élément</th><th>Détail</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Date</strong></td><td>Mercredi 28 février – 14h00 à 16h30</td></tr>
+          <tr><td><strong>Lieu</strong></td><td>Salle de conférence, NOVA Solutions – 12 rue des Lilas, 75008 Paris</td></tr>
+          <tr><td><strong>Présents</strong></td><td>M. Durand (DG), Mme Bénard (RAF), M. Leroux, Mme Petit, M. Faure (commerciaux)</td></tr>
+          <tr><td><strong>Excusés</strong></td><td>Mme Leblanc (assistante RH)</td></tr>
+          <tr><td><strong>Ordre du jour</strong></td><td>1. Résultats T1 2025 · 2. Objectifs T2 · 3. Formation équipe · 4. Questions diverses</td></tr>
+        </tbody>
+      </table>
+      <h3>Consignes de mise en forme</h3>
+      <ul>
+        <li>Styles Titre 1 / Titre 2 pour la hiérarchie</li>
+        <li>En-tête avec logo NOVA Solutions + date</li>
+        <li>Pied de page avec numérotation</li>
+        <li>Tableau récapitulatif des décisions et actions</li>
+        <li>Mise en page A4, marges normales, <strong>police Arial 11pt, interligne 1,15</strong></li>
+        <li>Nommage : <strong>CR_Reunion_280225_NOM.docx</strong></li>
+      </ul>
+      <h3>Tableau des actions à intégrer</h3>
+      <table class="enonce-table nova-t">
+        <thead><tr><th>Action / Décision</th><th>Responsable</th><th>Échéance</th><th>Statut</th></tr></thead>
+        <tbody>
+          <tr><td>Préparer la synthèse des résultats T1</td><td>M. Leroux</td><td>07/03/2025</td><td>À faire</td></tr>
+          <tr><td>Réviser les objectifs commerciaux T2</td><td>Mme Petit</td><td>14/03/2025</td><td>À faire</td></tr>
+          <tr><td>Planifier session de formation</td><td>Mme Bénard</td><td>21/03/2025</td><td>En attente</td></tr>
+          <tr><td>Diffuser le compte rendu aux équipes</td><td>Assistant(e)</td><td>05/03/2025</td><td><strong>Urgent</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h2>TÂCHE 3 — Présentation du bilan T1 (PowerPoint)</h2>
+      <span class="badge-tache nova-t">PowerPoint</span>
+      <p>M. Durand doit présenter le bilan du T1 aux actionnaires lors d'une visioconférence.</p>
+      <table class="enonce-table nova-t">
+        <thead><tr><th>Diapo</th><th>Contenu</th><th>Consignes</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1</strong></td><td>Diapo de titre</td><td>Logo fictif (texte), titre, sous-titre, date</td></tr>
+          <tr><td><strong>2</strong></td><td>Sommaire</td><td>Les 4 points abordés, avec numérotation</td></tr>
+          <tr><td><strong>3</strong></td><td>Présentation de NOVA Solutions</td><td>Chiffres clés fictifs (CA, effectif, secteurs)</td></tr>
+          <tr><td><strong>4</strong></td><td>Résultats commerciaux T1</td><td>Copier/coller le graphique Excel (Tâche 1)</td></tr>
+          <tr><td><strong>5</strong></td><td>Analyse par commercial</td><td>Tableau ou liste des performances individuelles</td></tr>
+          <tr><td><strong>6</strong></td><td>Objectifs T2 – Plan d'action</td><td>3 objectifs prioritaires avec indicateurs (KPI fictifs)</td></tr>
+          <tr><td><strong>7</strong></td><td>Conclusion &amp; Questions</td><td>Message de clôture + coordonnées fictives</td></tr>
+        </tbody>
+      </table>
+      <h3>Consignes de mise en forme</h3>
+      <ul>
+        <li>Thème Office cohérent et professionnel (couleurs sobres)</li>
+        <li>Masque des diapositives pour uniformiser polices et couleurs</li>
+        <li>Transitions identiques entre toutes les diapositives</li>
+        <li>Numéro de diapositive sur chaque slide (sauf la 1ère)</li>
+        <li>Nommage : <strong>PPT_BilanT1_NOM.pptx</strong></li>
+      </ul>
+      <div class="info-box nova-i">
+        Cet atelier s'inscrit dans le cadre du bloc de compétences <strong>« Gestion et traitement de l'information »</strong> du BTS SAM. Les productions pourront être intégrées à votre portefeuille de compétences.
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CONFIGURATION SÉCURISÉE (saisie au runtime)
+══════════════════════════════════════════ -->
+
+<!-- Panneau de configuration enseignant (déclenché par Ctrl+Shift+K) -->
+<div id="configOverlay" style="display:none;position:fixed;inset:0;background:rgba(10,20,50,.7);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+  <div style="background:#fff;border-radius:16px;padding:36px;width:100%;max-width:480px;margin:20px;box-shadow:0 24px 80px rgba(0,0,0,.3)">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+      <div style="background:#1a2e5a;color:#fff;border-radius:8px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:1.2rem">⚙️</div>
+      <div>
+        <div style="font-family:'DM Serif Display',serif;font-size:1.2rem;color:#1a2e5a">Configuration enseignant</div>
+        <div style="font-size:.75rem;color:#5a6070">Ces clés ne sont jamais écrites dans le fichier</div>
+      </div>
+    </div>
+    <div style="background:#fff8ee;border:1px solid #f0c070;border-radius:8px;padding:10px 14px;font-size:.8rem;color:#7a5010;margin-bottom:20px;line-height:1.5">
+      🔒 Saisissez vos clés ici avant que les élèves commencent. Elles sont stockées uniquement en mémoire de votre navigateur, pour cette session uniquement.
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="display:block;font-size:.78rem;font-weight:600;color:#1a2e5a;margin-bottom:5px">CLÉ API ANTHROPIC</label>
+      <input id="cfg_anthropic" type="password" placeholder="sk-ant-..." style="width:100%;padding:10px 14px;border:1.5px solid #dde2ee;border-radius:8px;font-size:.88rem;outline:none;font-family:'DM Sans',sans-serif">
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="display:block;font-size:.78rem;font-weight:600;color:#1a2e5a;margin-bottom:5px">EMAILJS — CLÉ PUBLIQUE</label>
+      <input id="cfg_emailjs_key" type="password" placeholder="user_..." style="width:100%;padding:10px 14px;border:1.5px solid #dde2ee;border-radius:8px;font-size:.88rem;outline:none;font-family:'DM Sans',sans-serif">
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="display:block;font-size:.78rem;font-weight:600;color:#1a2e5a;margin-bottom:5px">EMAILJS — SERVICE ID</label>
+      <input id="cfg_service" type="text" placeholder="service_..." style="width:100%;padding:10px 14px;border:1.5px solid #dde2ee;border-radius:8px;font-size:.88rem;outline:none;font-family:'DM Sans',sans-serif">
+    </div>
+    <div style="margin-bottom:20px">
+      <label style="display:block;font-size:.78rem;font-weight:600;color:#1a2e5a;margin-bottom:5px">EMAILJS — TEMPLATE ID</label>
+      <input id="cfg_template" type="text" placeholder="template_..." style="width:100%;padding:10px 14px;border:1.5px solid #dde2ee;border-radius:8px;font-size:.88rem;outline:none;font-family:'DM Sans',sans-serif">
+    </div>
+    <div style="display:flex;gap:10px">
+      <button onclick="saveConfig()" style="flex:1;padding:12px;background:#1a2e5a;color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer">✓ Enregistrer</button>
+      <button onclick="closeConfig()" style="padding:12px 18px;background:#f0f2f8;color:#1a2e5a;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.95rem;cursor:pointer">Annuler</button>
+    </div>
+    <div id="cfg_status" style="margin-top:12px;font-size:.8rem;text-align:center;min-height:18px"></div>
+  </div>
+</div>
+
+<!-- Indicateur discret configuration active -->
+<div id="configBadge" style="display:none;position:fixed;top:12px;right:16px;background:#2d7a4f;color:#fff;font-size:.72rem;font-weight:600;padding:5px 12px;border-radius:99px;z-index:800;cursor:pointer" onclick="openConfig()" title="Cliquez pour modifier la configuration">⚙️ Config active</div>
+
+<script>
+// CONFIG stockée uniquement en mémoire (jamais dans le fichier)
+const CONFIG = {
+  get ANTHROPIC_KEY()   { return window._cfg_anthropic  || ''; },
+  get EMAILJS_PUBLIC_KEY(){ return window._cfg_emailjs_key || ''; },
+  get EMAILJS_SERVICE_ID(){ return window._cfg_service  || ''; },
+  get EMAILJS_TEMPLATE_ID(){ return window._cfg_template || ''; },
+};
+
+function openConfig() {
+  // Pré-remplir si déjà saisi
+  if (window._cfg_anthropic)   document.getElementById('cfg_anthropic').value   = window._cfg_anthropic;
+  if (window._cfg_emailjs_key) document.getElementById('cfg_emailjs_key').value = window._cfg_emailjs_key;
+  if (window._cfg_service)     document.getElementById('cfg_service').value     = window._cfg_service;
+  if (window._cfg_template)    document.getElementById('cfg_template').value    = window._cfg_template;
+  document.getElementById('configOverlay').style.display = 'flex';
+}
+function closeConfig() {
+  document.getElementById('configOverlay').style.display = 'none';
+}
+function saveConfig() {
+  const a = document.getElementById('cfg_anthropic').value.trim();
+  const k = document.getElementById('cfg_emailjs_key').value.trim();
+  const s = document.getElementById('cfg_service').value.trim();
+  const t = document.getElementById('cfg_template').value.trim();
+  if (!a) { document.getElementById('cfg_status').innerHTML = '<span style="color:#c0392b">⚠️ La clé Anthropic est requise.</span>'; return; }
+  window._cfg_anthropic   = a;
+  window._cfg_emailjs_key = k;
+  window._cfg_service     = s;
+  window._cfg_template    = t;
+  document.getElementById('cfg_status').innerHTML = '<span style="color:#2d7a4f">✓ Configuration enregistrée !</span>';
+  document.getElementById('configBadge').style.display = 'block';
+  setTimeout(closeConfig, 800);
+}
+// Raccourci clavier Ctrl+Shift+K pour ouvrir le panneau config
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.shiftKey && e.key === 'K') { e.preventDefault(); openConfig(); }
+});
+</script>
+
+<!-- ══════════════════════════════════════════
+     DONNÉES — QUESTIONS
+══════════════════════════════════════════ -->
+<script>
+const QUESTIONS = [
+  // ════════════════════════════════
+  // BLOC 1 — ATELIER NORDEX · EXCEL (Q1–Q10)
+  // ════════════════════════════════
+  {
+    id: 1, bloc: "nordex", type: "qcm",
+    text: "Dans l'atelier NORDEX, quel est l'objectif mensuel fixé pour chaque commercial ?",
+    options: ["10 000 €", "12 500 €", "15 000 €", "20 000 €"],
+    answer: 2, points: 0.4,
+    explication: "L'énoncé précise explicitement : « objectif mensuel : 15 000 € » par commercial."
+  },
+  {
+    id: 2, bloc: "nordex", type: "qcm",
+    text: "Pour calculer le taux d'atteinte de l'objectif d'un commercial ayant réalisé 13 500 € pour un objectif de 15 000 €, quelle formule Excel est correcte ?",
+    options: ["=13500-15000", "=13500/15000", "=13500*15000", "=15000/13500"],
+    answer: 1, points: 0.4,
+    explication: "Le taux d'atteinte = Réalisé / Objectif. Ici =13500/15000 = 90%. On formate ensuite en pourcentage."
+  },
+  {
+    id: 3, bloc: "nordex", type: "qcm",
+    text: "Pour calculer la part d'une région dans le CA total, si la région Nord a réalisé 28 000 € sur un total de 140 000 €, quelle formule utiliser (cellule D5 = région, cellule D_total = total) ?",
+    options: ["=D5*D_total", "=D_total/D5", "=D5/D_total", "=(D5-D_total)/D_total"],
+    answer: 2, points: 0.4,
+    explication: "Part régionale = Valeur région / Total général. =D5/D_total donne 28000/140000 = 20%."
+  },
+  {
+    id: 4, bloc: "nordex", type: "qcm",
+    text: "Quel type de graphique Excel est le plus adapté pour visualiser l'ÉVOLUTION MENSUELLE des ventes dans le temps ?",
+    options: ["Graphique en secteurs (camembert)", "Graphique en barres groupées", "Graphique en courbes (lignes)", "Graphique en nuage de points"],
+    answer: 2, points: 0.4,
+    explication: "Un graphique en courbes est conçu pour représenter une évolution dans le temps (série chronologique)."
+  },
+  {
+    id: 5, bloc: "nordex", type: "qcm",
+    text: "Pour calculer le total des ventes de janvier à mars d'un commercial (cellules B2:D2), quelle formule utiliser ?",
+    options: ["=B2+C2+D2", "=SOMME(B2:D2)", "=TOTAL(B2:D2)", "Les deux premières réponses sont correctes"],
+    answer: 3, points: 0.4,
+    explication: "=B2+C2+D2 et =SOMME(B2:D2) donnent le même résultat. =TOTAL() n'existe pas dans Excel."
+  },
+  {
+    id: 6, bloc: "nordex", type: "qcm",
+    text: "Pour l'impression du tableau principal NORDEX, quelle orientation est recommandée par l'énoncé ?",
+    options: ["Portrait", "Paysage", "A3 portrait", "A5 paysage"],
+    answer: 1, points: 0.4,
+    explication: "L'énoncé précise : « orientation paysage pour le tableau principal » afin que toutes les colonnes soient visibles."
+  },
+  {
+    id: 7, bloc: "nordex", type: "qcm",
+    text: "Dans l'onglet 'Graphiques' de NORDEX, combien de graphiques distincts doit-on créer ?",
+    options: ["1", "2", "3", "4"],
+    answer: 2, points: 0.4,
+    explication: "L'énoncé demande 3 graphiques : histogramme par commercial, camembert régional, courbe d'évolution mensuelle."
+  },
+  {
+    id: 8, bloc: "nordex", type: "qcm",
+    text: "Quel graphique est le plus adapté pour comparer la répartition RÉGIONALE du CA (parts d'un tout) ?",
+    options: ["Graphique en courbes", "Histogramme groupé", "Graphique en secteurs (camembert)", "Graphique en radar"],
+    answer: 2, points: 0.4,
+    explication: "Le graphique en secteurs (camembert) représente des proportions/parts d'un tout, idéal pour la répartition."
+  },
+  {
+    id: 9, bloc: "nordex", type: "qcm",
+    text: "Dans le document Word NORDEX, combien de parties principales le compte rendu doit-il comporter ?",
+    options: ["2", "3", "4", "5"],
+    answer: 2, points: 0.4,
+    explication: "4 parties : 1. Objet et contexte, 2. Résultats par commercial, 3. Analyse des performances, 4. Recommandations T2."
+  },
+  {
+    id: 10, bloc: "nordex", type: "qcm",
+    text: "Combien de diapositives le PowerPoint NORDEX doit-il comporter selon l'énoncé ?",
+    options: ["4 à 6", "6 à 8", "8 à 10", "Exactement 5"],
+    answer: 1, points: 0.4,
+    explication: "L'énoncé NORDEX précise : « Créer un support PowerPoint de 6 à 8 diapositives »."
+  },
+
+  // ════════════════════════════════
+  // BLOC 2 — ATELIER NORDEX · WORD & PPT (Q11–Q15)
+  // ════════════════════════════════
+  {
+    id: 11, bloc: "nordex", type: "qcm",
+    text: "Dans le PowerPoint NORDEX, quelle est la taille de police MINIMALE recommandée pour rester lisible à 3 mètres ?",
+    options: ["12 pt", "14 pt", "18 pt", "24 pt"],
+    answer: 2, points: 0.4,
+    explication: "L'énoncé précise : « police min. 18pt, pas de pavés de texte » pour assurer la lisibilité à distance."
+  },
+  {
+    id: 12, bloc: "nordex", type: "qcm",
+    text: "Quelle diapositive NORDEX doit contenir les « Chiffres clés du T1 » avec 3 KPI visuels ?",
+    options: ["Diapositive 2", "Diapositive 3", "Diapositive 4", "Diapositive 5"],
+    answer: 1, points: 0.4,
+    explication: "Selon la structure imposée NORDEX : Diapo 3 = Chiffres clés du T1 (CA total, objectif %, 3 KPI visuels)."
+  },
+  {
+    id: 13, bloc: "nordex", type: "qcm",
+    text: "Quel est le destinataire du compte rendu Word dans l'atelier NORDEX ?",
+    options: ["Le directeur général", "M. Lefebvre, responsable commercial", "Les actionnaires", "L'équipe RH"],
+    answer: 1, points: 0.4,
+    explication: "L'énoncé précise : « Rédiger un compte rendu professionnel destiné à M. Lefebvre, responsable commercial »."
+  },
+  {
+    id: 14, bloc: "nordex", type: "qcm",
+    text: "Quelle activité principale de NORDEX SAS est décrite dans l'atelier ?",
+    options: ["Conseil en organisation", "Distribution de fournitures de bureau", "Vente de matériel informatique", "Services aux entreprises"],
+    answer: 1, points: 0.4,
+    explication: "L'énoncé précise : « NORDEX SAS, PME spécialisée dans la distribution de fournitures de bureau »."
+  },
+  {
+    id: 15, bloc: "nordex", type: "qcm",
+    text: "Dans le rendu final de l'atelier NORDEX, comment doivent être nommés les fichiers ?",
+    options: ["Excel_NORDEX / Word_NORDEX / PPT_NORDEX", "NOM1_NOM2_Excel / NOM1_NOM2_Word / NOM1_NOM2_PPT", "Atelier1 / Atelier2 / Atelier3", "NORDEX_Trimestre1_Fichier"],
+    answer: 1, points: 0.4,
+    explication: "L'énoncé précise : « Les fichiers seront nommés : NOM1_NOM2_Excel / NOM1_NOM2_Word / NOM1_NOM2_PPT »."
+  },
+
+  // ════════════════════════════════
+  // BLOC 3 — ATELIER NOVA · EXCEL (Q16–Q22)
+  // ════════════════════════════════
+  {
+    id: 16, bloc: "nova", type: "qcm",
+    text: "Dans l'atelier NOVA, quel est le barème kilométrique appliqué pour calculer les indemnités de déplacement ?",
+    options: ["0,25 €/km", "0,30 €/km", "0,35 €/km", "0,45 €/km"],
+    answer: 2, points: 0.4,
+    explication: "L'énoncé NOVA précise : « Calculer l'indemnité kilométrique en appliquant le barème de 0,35 €/km »."
+  },
+  {
+    id: 17, bloc: "nova", type: "qcm",
+    text: "Pour un commercial ayant parcouru 320 km, quelle formule Excel calcule correctement l'indemnité kilométrique (km en cellule D5) ?",
+    options: ["=D5+0,35", "=D5*0,35", "=D5/0,35", "=0,35/D5"],
+    answer: 1, points: 0.4,
+    explication: "Indemnité = Kilométrage × barème. =D5*0,35 = 320 × 0,35 = 112 €."
+  },
+  {
+    id: 18, bloc: "nova", type: "qcm",
+    text: "Quelle mise en forme conditionnelle est demandée pour les totaux de frais dans l'atelier NOVA ?",
+    options: ["Fond vert si total < 300 €", "Fond rouge si total > 500 €", "Fond jaune si total = 400 €", "Texte bleu si total > 200 €"],
+    answer: 1, points: 0.4,
+    explication: "L'énoncé précise : « mettre en rouge les totaux supérieurs à 500 € » via une mise en forme conditionnelle."
+  },
+  {
+    id: 19, bloc: "nova", type: "qcm",
+    text: "Quelle fonction Excel permet d'identifier le commercial ayant engagé LE PLUS de frais dans NOVA ?",
+    options: ["=MIN(plage)", "=MOYENNE(plage)", "=MAX(plage)", "=NB(plage)"],
+    answer: 2, points: 0.4,
+    explication: "=MAX(plage) retourne la valeur la plus élevée, permettant d'identifier le montant maximum et le commercial associé."
+  },
+  {
+    id: 20, bloc: "nova", type: "qcm",
+    text: "Dans l'atelier NOVA, la feuille 'Tableau de bord' doit être créée. Que signifie 'figer la première ligne' dans Excel ?",
+    options: ["Supprimer la première ligne", "Rendre la ligne non modifiable (protection)", "Maintenir la ligne de titres visible lors du défilement", "Fusionner toutes les cellules de la première ligne"],
+    answer: 2, points: 0.4,
+    explication: "Figer une ligne (Affichage > Figer les volets) maintient les titres de colonnes visibles quand on fait défiler vers le bas."
+  },
+  {
+    id: 21, bloc: "nova", type: "qcm",
+    text: "Quelle fonction Excel calcule la MOYENNE des repas sur l'ensemble de la période dans NOVA ?",
+    options: ["=SOMME(plage)", "=MOYENNE(plage)", "=MEDIANE(plage)", "=NB.SI(plage)"],
+    answer: 1, points: 0.4,
+    explication: "=MOYENNE(plage) calcule la moyenne arithmétique de toutes les valeurs de la plage sélectionnée."
+  },
+  {
+    id: 22, bloc: "nova", type: "qcm",
+    text: "Quel type de graphique est demandé pour visualiser les frais totaux par commercial dans NOVA ?",
+    options: ["Graphique en secteurs", "Graphique en courbes", "Graphique en barres groupées", "Graphique en bulles"],
+    answer: 2, points: 0.4,
+    explication: "L'énoncé NOVA précise : « Insérer un graphique en barres groupées représentant les frais totaux par commercial »."
+  },
+
+  // ════════════════════════════════
+  // BLOC 4 — ATELIER NOVA · WORD & PPT (Q23–Q30)
+  // ════════════════════════════════
+  {
+    id: 23, bloc: "nova", type: "qcm",
+    text: "Dans le compte rendu NOVA, quelle police et taille sont imposées pour le corps du texte ?",
+    options: ["Times New Roman 12pt", "Calibri 11pt", "Arial 11pt", "Verdana 10pt"],
+    answer: 2, points: 0.4,
+    explication: "L'énoncé précise : « police Arial 11pt, interligne 1,15 » pour la mise en page du compte rendu NOVA."
+  },
+  {
+    id: 24, bloc: "nova", type: "qcm",
+    text: "La réunion NOVA du 28 février s'est tenue de :",
+    options: ["9h00 à 11h30", "13h00 à 15h00", "14h00 à 16h30", "10h00 à 12h00"],
+    answer: 2, points: 0.4,
+    explication: "L'énoncé précise : « Mercredi 28 février – 14h00 à 16h30 » dans les informations de la réunion NOVA."
+  },
+  {
+    id: 25, bloc: "nova", type: "qcm",
+    text: "Qui était excusée lors de la réunion NOVA du 28 février ?",
+    options: ["Mme Bénard (RAF)", "M. Faure (commercial)", "Mme Leblanc (assistante RH)", "M. Durand (DG)"],
+    answer: 2, points: 0.4,
+    explication: "L'énoncé indique : « Excusés : Mme Leblanc (assistante RH) »."
+  },
+  {
+    id: 26, bloc: "nova", type: "qcm",
+    text: "Quel est le délai le plus urgent parmi les actions à mener suite à la réunion NOVA ?",
+    options: ["Réviser les objectifs T2 (14/03/2025)", "Planifier la formation (21/03/2025)", "Préparer la synthèse T1 (07/03/2025)", "Diffuser le compte rendu (05/03/2025)"],
+    answer: 3, points: 0.4,
+    explication: "Le statut « Urgent » avec échéance 05/03/2025 est attribué à la diffusion du compte rendu aux équipes."
+  },
+  {
+    id: 27, bloc: "nova", type: "qcm",
+    text: "Comment doit être nommé le fichier Word du compte rendu NOVA ?",
+    options: ["NOVA_CompteRendu.docx", "CR_Reunion_280225_NOM.docx", "Reunion_NOVA_Fevrier.docx", "CR_NOVA_BTS.docx"],
+    answer: 1, points: 0.4,
+    explication: "L'énoncé précise : « Nommer le fichier : CR_Reunion_280225_NOM.docx »."
+  },
+  {
+    id: 28, bloc: "nova", type: "qcm",
+    text: "Dans le PowerPoint NOVA, sur quelle diapositive doit-on insérer le graphique Excel de la Tâche 1 ?",
+    options: ["Diapositive 2", "Diapositive 3", "Diapositive 4", "Diapositive 5"],
+    answer: 2, points: 0.4,
+    explication: "Structure NOVA : Diapo 4 = Résultats commerciaux T1, avec le graphique Excel copié/collé depuis la Tâche 1."
+  },
+  {
+    id: 29, bloc: "nova", type: "qcm",
+    text: "Combien de diapositives comporte le diaporama NOVA selon la structure imposée ?",
+    options: ["5", "6", "7", "8"],
+    answer: 2, points: 0.4,
+    explication: "La structure NOVA impose exactement 7 diapositives (Diapo 1 à Diapo 7)."
+  },
+  {
+    id: 30, bloc: "nova", type: "qcm",
+    text: "Quel secteur d'activité est celui de NOVA Solutions SAS ?",
+    options: ["Distribution de fournitures", "Vente en ligne", "Conseil & services aux entreprises", "Industrie manufacturière"],
+    answer: 2, points: 0.4,
+    explication: "L'énoncé précise : « NOVA Solutions SAS – Secteur : Conseil & services aux entreprises »."
+  },
+
+  // ════════════════════════════════
+  // BLOC 5 — QUESTIONS OUVERTES (Q31–Q35)
+  // ════════════════════════════════
+  {
+    id: 31, bloc: "ouvert", type: "open", points: 2,
+    text: "📝 Question ouverte — Dans l'atelier NORDEX, expliquez en 3 à 5 phrases la démarche que vous avez suivie pour créer les graphiques dans l'onglet 'Graphiques' d'Excel. Précisez les types de graphiques choisis et pourquoi ils sont adaptés à chaque donnée.",
+    corrigeRef: "L'élève devrait mentionner : sélection des données appropriées, insertion depuis l'onglet 'Insertion', choix de l'histogramme pour comparer les commerciaux, du camembert pour la répartition régionale (parts d'un tout), et des courbes pour l'évolution temporelle. La justification du choix graphique selon la nature des données est essentielle."
+  },
+  {
+    id: 32, bloc: "ouvert", type: "open", points: 2,
+    text: "📝 Question ouverte — Dans l'atelier NOVA, décrivez comment vous avez mis en place la mise en forme conditionnelle pour signaler les frais supérieurs à 500 €. Expliquez les étapes dans Excel et l'intérêt de cette fonctionnalité pour un assistant de gestion.",
+    corrigeRef: "L'élève devrait décrire : sélection de la plage de totaux, onglet Accueil > Mise en forme conditionnelle > Nouvelle règle > 'Valeur de la cellule supérieure à 500' > choisir un fond rouge. L'intérêt est de repérer visuellement et rapidement les anomalies ou dépassements de seuil sans avoir à lire chaque valeur."
+  },
+  {
+    id: 33, bloc: "ouvert", type: "open", points: 2,
+    text: "📝 Question ouverte — En tant qu'assistant(e) de direction dans l'atelier NOVA, vous devez rédiger un compte rendu professionnel. Quels sont les éléments indispensables de mise en forme et de structure que vous avez appliqués, et pourquoi sont-ils importants dans un contexte professionnel ?",
+    corrigeRef: "L'élève devrait mentionner : styles de titres (Titre 1, Titre 2) pour la hiérarchie, en-tête avec logo et date, pied de page avec numérotation, tableau des actions récapitulatif, langage professionnel, mise en page A4 avec marges normales, police Arial 11pt, interligne 1,15. L'importance : clarté, crédibilité, lisibilité, archivage, et communication efficace en entreprise."
+  },
+  {
+    id: 34, bloc: "ouvert", type: "open", points: 1,
+    text: "📝 Question ouverte — Quelle est selon vous la différence principale entre un compte rendu de réunion (Tâche NOVA) et un bilan commercial (Tâche NORDEX) ? Citez au moins deux différences concrètes.",
+    corrigeRef: "Différences attendues : le compte rendu relate un événement passé (réunion) avec ses décisions et actions, tandis que le bilan commercial analyse des données chiffrées sur une période. Le compte rendu est narratif/descriptif, le bilan est analytique/chiffré. Le compte rendu liste les présents/excusés, le bilan comporte des graphiques et tableaux de données. Les destinataires peuvent différer (participants de la réunion vs direction commerciale)."
+  },
+  {
+    id: 35, bloc: "ouvert", type: "open", points: 1,
+    text: "📝 Question ouverte — Pour le PowerPoint de présentation (NORDEX ou NOVA), quelles règles fondamentales avez-vous respectées pour qu'une diapositive soit efficace lors d'une présentation professionnelle ? Donnez au moins 3 règles.",
+    corrigeRef: "Règles attendues parmi : police minimum 18pt (lisible à 3m), pas de pavés de texte (synthèse), cohérence graphique avec un thème, une idée principale par diapositive, utilisation de visuels/graphiques plutôt que du texte, contraste suffisant pour la lisibilité, titre clair sur chaque diapo, numérotation des diapositives, transitions homogènes."
+  }
+];
+
+// Points totaux
+const TOTAL_QCM_PTS = QUESTIONS.filter(q => q.type === 'qcm').reduce((s,q) => s + q.points, 0);
+const TOTAL_OPEN_PTS = QUESTIONS.filter(q => q.type === 'open').reduce((s,q) => s + q.points, 0);
+const TOTAL_PTS = TOTAL_QCM_PTS + TOTAL_OPEN_PTS;
+// On scale sur 20
+const SCALE = 20 / TOTAL_PTS;
+</script>
+
+<!-- ══════════════════════════════════════════
+     APPLICATION LOGIC
+══════════════════════════════════════════ -->
+<script>
+let student = {};
+let answers = {}; // {qId: index ou texte}
+
+// ── Affichage des écrans ──
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ── Démarrage ──
+function startQuiz() {
+  const nom = document.getElementById('inputNom').value.trim();
+  const prenom = document.getElementById('inputPrenom').value.trim();
+  const mail = document.getElementById('inputMail').value.trim();
+  if (!nom || !prenom || !mail) { alert('Veuillez remplir tous les champs.'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) { alert('Adresse mail invalide.'); return; }
+  student = { nom: nom.toUpperCase(), prenom, mail };
+  document.getElementById('progressWrap').style.display = 'block';
+  document.getElementById('fabContainer').style.display = 'flex';
+  buildQuiz();
+  showScreen('screenQuiz');
+}
+
+// ── Construction du quiz ──
+function buildQuiz() {
+  const wrap = document.getElementById('quizContent');
+  wrap.innerHTML = '';
+
+  const blocs = [
+    { key: 'nordex', label: 'NORDEX SAS', badge: '', qs: QUESTIONS.filter(q => q.bloc === 'nordex') },
+    { key: 'nova', label: 'NOVA Solutions', badge: 'nova', qs: QUESTIONS.filter(q => q.bloc === 'nova') },
+    { key: 'ouvert', label: 'Questions ouvertes (corrigées par IA)', badge: 'open', qs: QUESTIONS.filter(q => q.bloc === 'ouvert') },
+  ];
+
+  blocs.forEach(bloc => {
+    const secDiv = document.createElement('div');
+    secDiv.innerHTML = `
+      <div class="section-header">
+        <span class="section-badge ${bloc.badge}">${bloc.badge === '' ? 'NORDEX' : bloc.badge === 'nova' ? 'NOVA' : 'OUVERT'}</span>
+        <span class="section-title">${bloc.label}</span>
+      </div>`;
+
+    bloc.qs.forEach(q => {
+      const card = document.createElement('div');
+      card.className = 'q-card';
+      card.id = `qcard-${q.id}`;
+      let inner = `<div class="q-num">Question ${q.id} / ${QUESTIONS.length}</div>
+        <div class="q-text">${q.text} <span class="q-points">${q.points} pt${q.points > 1 ? 's' : ''}</span></div>`;
+
+      if (q.type === 'qcm') {
+        inner += `<div class="options">`;
+        q.options.forEach((opt, i) => {
+          inner += `<label class="option" id="opt-${q.id}-${i}">
+            <input type="radio" name="q${q.id}" value="${i}" onchange="recordQCM(${q.id}, ${i})">
+            ${opt}
+          </label>`;
+        });
+        inner += `</div>`;
+      } else {
+        inner += `<textarea class="open-textarea" id="open-${q.id}" placeholder="Rédigez votre réponse ici…" 
+          oninput="recordOpen(${q.id}, this.value); updateChar(${q.id}, this.value.length)"
+          rows="4"></textarea>
+          <div class="char-count" id="char-${q.id}">0 caractères</div>`;
+      }
+      card.innerHTML = inner;
+      secDiv.appendChild(card);
+    });
+
+    wrap.appendChild(secDiv);
+  });
+
+  // Zone de soumission
+  wrap.innerHTML += `
+    <div class="submit-zone">
+      <h3>Prêt(e) à soumettre ?</h3>
+      <p>Vérifiez vos réponses avant de valider. Après soumission, vous recevrez votre note et le corrigé détaillé par mail.</p>
+      <button class="btn-submit" onclick="submitEval()">✓ Soumettre mon évaluation</button>
+    </div>`;
+
+  updateProgress();
+}
+
+function recordQCM(qId, val) {
+  answers[qId] = val;
+  document.querySelectorAll(`[id^="opt-${qId}-"]`).forEach(el => el.classList.remove('selected'));
+  document.getElementById(`opt-${qId}-${val}`)?.classList.add('selected');
+  updateProgress();
+}
+function recordOpen(qId, val) { answers[qId] = val; updateProgress(); }
+function updateChar(qId, len) { const el = document.getElementById(`char-${qId}`); if(el) el.textContent = `${len} caractères`; }
+
+function updateProgress() {
+  const answered = Object.keys(answers).length;
+  const total = QUESTIONS.length;
+  const pct = Math.round((answered / total) * 100);
+  document.getElementById('progressLabel').textContent = `${answered} / ${total} questions répondues`;
+  document.getElementById('progressPct').textContent = `${pct}%`;
+  document.getElementById('progressFill').style.width = `${pct}%`;
+}
+
+// ── Soumission ──
+async function submitEval() {
+  const unanswered = QUESTIONS.filter(q => answers[q.id] === undefined || answers[q.id] === '');
+  if (unanswered.length > 0) {
+    if (!confirm(`${unanswered.length} question(s) sans réponse. Voulez-vous quand même soumettre ?`)) return;
+  }
+  document.querySelector('.btn-submit').disabled = true;
+  document.getElementById('progressWrap').style.display = 'none';
+  document.getElementById('fabContainer').style.display = 'none';
+  showScreen('screenLoading');
+  await runCorrection();
+}
+
+// ── Correction ──
+async function runCorrection() {
+  // ÉTAPE 1 — QCM
+  setStep(1, 'active');
+  await delay(600);
+  const qcmResults = correctQCM();
+  setStep(1, 'done');
+
+  // ÉTAPE 2 — Questions ouvertes (IA)
+  setStep(2, 'active');
+  const openResults = await correctOpenAI();
+  setStep(2, 'done');
+
+  // ÉTAPE 3 — Score
+  setStep(3, 'active');
+  await delay(400);
+  const totalRaw = qcmResults.score + openResults.score;
+  const totalSur20 = Math.round((totalRaw / TOTAL_PTS) * 20 * 10) / 10;
+  setStep(3, 'done');
+
+  // ÉTAPE 4 — Mail
+  setStep(4, 'active');
+  await sendMail(totalSur20, qcmResults, openResults);
+  setStep(4, 'done');
+
+  await delay(400);
+  buildResults(totalSur20, totalRaw, qcmResults, openResults);
+  showScreen('screenResults');
+}
+
+function correctQCM() {
+  let score = 0;
+  const details = [];
+  QUESTIONS.filter(q => q.type === 'qcm').forEach(q => {
+    const userAns = answers[q.id];
+    const correct = (userAns === q.answer);
+    if (correct) score += q.points;
+    details.push({
+      q, userAns,
+      correct,
+      earnedPts: correct ? q.points : 0
+    });
+  });
+  return { score, details };
+}
+
+async function correctOpenAI() {
+  const openQs = QUESTIONS.filter(q => q.type === 'open');
+  let score = 0;
+  const details = [];
+
+  if (CONFIG.ANTHROPIC_KEY === 'VOTRE_CLE_API_ANTHROPIC_ICI') {
+    // Mode démo sans clé
+    openQs.forEach(q => {
+      details.push({ q, userAns: answers[q.id] || '', earnedPts: 0, feedback: "⚠️ Clé API non configurée. La correction IA n'est pas disponible. Veuillez configurer la clé Anthropic." });
+    });
+    return { score: 0, details };
+  }
+
+  for (const q of openQs) {
+    const userText = (answers[q.id] || '').trim();
+    if (!userText || userText.length < 10) {
+      details.push({ q, userAns: userText, earnedPts: 0, feedback: "Réponse absente ou trop courte pour être évaluée." });
+      continue;
+    }
+    try {
+      const result = await gradeOpenQuestion(q, userText);
+      score += result.pts;
+      details.push({ q, userAns: userText, earnedPts: result.pts, feedback: result.feedback });
+    } catch(e) {
+      details.push({ q, userAns: userText, earnedPts: 0, feedback: `Erreur lors de la correction IA : ${e.message}` });
+    }
+  }
+  return { score, details };
+}
+
+async function gradeOpenQuestion(q, userText) {
+  const prompt = `Tu es un correcteur expert en BTS SAM (Support à l'Action Managériale) pour une classe de 1ère année.
+
+Question posée à l'élève (${q.points} points au maximum) :
+"${q.text.replace('📝 Question ouverte — ', '')}"
+
+Éléments de correction attendus :
+${q.corrigeRef}
+
+Réponse de l'élève :
+"${userText}"
+
+Évalue cette réponse sur ${q.points} point(s) avec PRÉCISION. 
+Retourne UNIQUEMENT un JSON valide avec ces deux champs :
+{
+  "pts": <note en décimales entre 0 et ${q.points}, ex: 0, 0.5, 1, 1.5, 2>,
+  "feedback": "<2-4 phrases de feedback constructif : ce qui est bien, ce qui manque, correction>"
+}`;
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': CONFIG.ANTHROPIC_KEY,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 400,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  if (!response.ok) throw new Error(`API ${response.status}`);
+  const data = await response.json();
+  const text = data.content[0].text.trim();
+  const clean = text.replace(/```json|```/g, '').trim();
+  const parsed = JSON.parse(clean);
+  return { pts: Math.min(parsed.pts, q.points), feedback: parsed.feedback };
+}
+
+// ── Envoi mail ──
+async function sendMail(note, qcmResults, openResults) {
+  if (CONFIG.EMAILJS_PUBLIC_KEY === 'VOTRE_CLE_PUBLIQUE_EMAILJS') return; // Mode démo
+
+  try {
+    emailjs.init(CONFIG.EMAILJS_PUBLIC_KEY);
+
+    // Construire le résumé texte
+    let corrTxt = `=== CORRECTION QCM ===\n`;
+    qcmResults.details.forEach(d => {
+      corrTxt += `Q${d.q.id}: ${d.correct ? '✓' : '✗'} (${d.earnedPts}/${d.q.points} pt) — ${d.q.options[d.q.answer]}\n`;
+    });
+    corrTxt += `\n=== QUESTIONS OUVERTES ===\n`;
+    openResults.details.forEach(d => {
+      corrTxt += `Q${d.q.id}: ${d.earnedPts}/${d.q.points} pt\nFeedback: ${d.feedback}\n\n`;
+    });
+
+    await emailjs.send(CONFIG.EMAILJS_SERVICE_ID, CONFIG.EMAILJS_TEMPLATE_ID, {
+      to_email: student.mail,
+      to_name: `${student.prenom} ${student.nom}`,
+      student_name: `${student.prenom} ${student.nom}`,
+      note: `${note}/20`,
+      note_qcm: `${qcmResults.score.toFixed(1)}/${TOTAL_QCM_PTS.toFixed(1)}`,
+      note_open: `${openResults.score.toFixed(1)}/${TOTAL_OPEN_PTS.toFixed(1)}`,
+      correction: corrTxt,
+      date: new Date().toLocaleDateString('fr-FR')
+    });
+  } catch(e) {
+    console.warn('EmailJS error:', e);
+  }
+}
+
+// ── Affichage des résultats ──
+function buildResults(note, totalRaw, qcmResults, openResults) {
+  const pct = Math.round((note / 20) * 100);
+  const mention = note >= 16 ? '🏆 Très Bien' : note >= 14 ? '✨ Bien' : note >= 12 ? '👍 Assez Bien' : note >= 10 ? '✓ Passable' : '⚠️ Insuffisant';
+  const mailConfigured = CONFIG.EMAILJS_PUBLIC_KEY !== 'VOTRE_CLE_PUBLIQUE_EMAILJS';
+  const apiConfigured = CONFIG.ANTHROPIC_KEY !== 'VOTRE_CLE_API_ANTHROPIC_ICI';
+
+  let html = `
+    <div class="result-hero">
+      <div class="student-name">${student.prenom} ${student.nom}</div>
+      <div class="score-circle">
+        <div class="score-num">${note}</div>
+        <div class="score-denom">/ 20</div>
+      </div>
+      <div class="score-mention">${mention}</div>
+      <div class="score-pct">${pct}% de réussite</div>
+    </div>`;
+
+  if (mailConfigured) {
+    html += `<div class="mail-notice">✅ Le corrigé détaillé a été envoyé à <strong>${student.mail}</strong></div>`;
+  }
+  if (!apiConfigured || !mailConfigured) {
+    html += `<div class="config-warning">
+      <strong>⚙️ Configuration requise pour l'enseignant :</strong><br>
+      ${!apiConfigured ? '• Remplacez <code>VOTRE_CLE_API_ANTHROPIC_ICI</code> par votre clé API Anthropic<br>' : ''}
+      ${!mailConfigured ? '• Configurez EmailJS : clé publique, Service ID et Template ID<br>' : ''}
+      Voir la section <code>CONFIG</code> en haut du fichier HTML.
+    </div>`;
+  }
+
+  html += `
+    <div class="result-breakdown">
+      <div class="breakdown-card">
+        <h4>QCM (30 questions)</h4>
+        <div class="breakdown-score">${qcmResults.score.toFixed(1)} <span class="breakdown-max">/ ${TOTAL_QCM_PTS.toFixed(1)} pts</span></div>
+      </div>
+      <div class="breakdown-card">
+        <h4>Questions ouvertes (5 questions)</h4>
+        <div class="breakdown-score">${openResults.score.toFixed(1)} <span class="breakdown-max">/ ${TOTAL_OPEN_PTS.toFixed(1)} pts</span></div>
+      </div>
+    </div>`;
+
+  // Corrections QCM
+  html += `<div class="corrections-section"><h3>📋 Détail — QCM</h3>`;
+  qcmResults.details.forEach(d => {
+    const cls = d.correct ? 'correct' : 'incorrect';
+    const badgeCls = d.correct ? 'full' : 'zero';
+    const userLabel = d.userAns !== undefined ? d.q.options[d.userAns] : 'Sans réponse';
+    html += `<div class="correction-item ${cls}">
+      <div class="corr-q"><span class="badge-pts ${badgeCls}">${d.earnedPts}/${d.q.points} pt</span>Q${d.q.id}. ${d.q.text}</div>
+      <div class="corr-your">Votre réponse : <em>${userLabel}</em></div>
+      <div class="corr-answer ${d.correct ? 'ok' : 'ko'}">
+        ${d.correct ? '✓ Correct' : `✗ Bonne réponse : ${d.q.options[d.q.answer]}`}
+      </div>
+      <div class="corr-expl">${d.q.explication}</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // Corrections ouvertes
+  html += `<div class="corrections-section"><h3>🤖 Détail — Questions ouvertes</h3>`;
+  openResults.details.forEach(d => {
+    const partial = d.earnedPts > 0 && d.earnedPts < d.q.points;
+    const cls = d.earnedPts === 0 ? 'incorrect' : partial ? 'partial' : 'correct';
+    const badgeCls = d.earnedPts === 0 ? 'zero' : partial ? 'half' : 'full';
+    html += `<div class="correction-item ${cls}">
+      <div class="corr-q"><span class="badge-pts ${badgeCls}">${d.earnedPts}/${d.q.points} pt</span>Q${d.q.id}. ${d.q.text.replace('📝 Question ouverte — ', '')}</div>
+      <div class="corr-your">Votre réponse : <em>${d.userAns || '(aucune réponse)'}</em></div>
+      <div class="corr-ai"><strong>🤖 Feedback IA :</strong>${d.feedback}</div>
+      <div class="corr-expl"><strong>Éléments attendus :</strong> ${d.q.corrigeRef}</div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  document.getElementById('resultsContent').innerHTML = html;
+}
+
+// ── Utilitaires ──
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+function setStep(n, state) {
+  const el = document.getElementById(`step${n}Icon`);
+  if (!el) return;
+  el.className = `step-icon ${state}`;
+  el.textContent = state === 'done' ? '✓' : state === 'active' ? '⟳' : n;
+}
+
+// ── Modales énoncés ──
+function openModal(which) {
+  const id = which === 'nordex' ? 'modalNordex' : 'modalNova';
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(which) {
+  const id = which === 'nordex' ? 'modalNordex' : 'modalNova';
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeModalOutside(e, which) {
+  if (e.target === e.currentTarget) closeModal(which);
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal('nordex'); closeModal('nova'); }
+});
+</script>
+
+</body>
+</html>
